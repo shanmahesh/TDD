@@ -7,31 +7,33 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+
 
 import com.person.entity.Person;
 import com.person.repo.PersonRepo;
 import com.person.service.PersonService;
 
 //@RunWith(MockitoJUnitRunner.class)
+
+
+@ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 
 	//@Autowired
 	PersonService serv ;
 	
-	@Mock
-	PersonRepo repo;
+
 	
 	List<Person> listP = new ArrayList<Person>();
 	
+	@Mock
+	PersonRepo repo;
 	
 	@BeforeEach
 	public void setUp() {
@@ -39,6 +41,7 @@ public class PersonServiceTest {
 		Person p = new Person();
 		p.id = 11l;
 		p.firstNm="FName";		
+		p.lastName = "LN";
 		
 		listP.add(p);
 		
@@ -48,10 +51,6 @@ public class PersonServiceTest {
 		
 		listP.add(p);
 		
-		 MockitoAnnotations.initMocks(this);
-		
-		Mockito.mock(PersonRepo.class);
-		
 		 serv = new PersonService(repo);
 	}
 	
@@ -60,8 +59,13 @@ public class PersonServiceTest {
 	@Test
 	public void testFindAll() {
 		
+		//Iterable<Person> p = (Iterable<Person>) listP;
+		
+		//Mockito.when(repo.findAll()).thenReturn(p);
+		
 		BDDMockito.given(repo.findAll())
 		.willReturn(listP);
+		
 		
 		List<Person> ps = serv.getPersons();
 		
@@ -70,7 +74,7 @@ public class PersonServiceTest {
 	}
 	
 	
-	/*@Test
+	@Test
 	public void testNameFound() {
 	
 		BDDMockito.given(repo.findAll())
@@ -81,12 +85,12 @@ public class PersonServiceTest {
 		ps.forEach(e->
 		{
 			if(e.firstNm.equalsIgnoreCase("FName"))
-				assertThat(e.lastName).isEqualTo("FirstNameFound");
+				assertThat(e.lastName).isEqualTo("LN");
 		}
 				
 				);
 		
-	}*/
+	}
 		
 		
 		

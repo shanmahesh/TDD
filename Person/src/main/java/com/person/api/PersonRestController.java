@@ -26,6 +26,13 @@ public class PersonRestController {
 	@Autowired
 	PersonService personService; 
 	
+	
+	
+	
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+
 	@GetMapping("/")
 	public String hello() {
 		return "Hello Vin!!";
