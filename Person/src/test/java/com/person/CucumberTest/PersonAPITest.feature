@@ -20,7 +20,23 @@
 Feature: Develop add person, list person, save person, query person 
   I want to use this template for my feature file
 
-  @tag1
+  @IntegrationTest
+  Scenario: Register a person valid
+  Given save person API is called with valid person
+  When person first name "Vin" is passed
+  Then the status should be 200
+  And the returned person ID should be > 0
+  
+  @IntegrationTest
+  Scenario: Register a person invalid
+  Given save person API is called with invalid person
+  When person first name "" is passed
+  Then the status should be 400
+  And the returned person ID should be 0
+  
+  
+  
+  @IntegrationTest
   Scenario: Query a person
     Given If person <prsnID> "<fstNm>" is present in the system
     When person <prsnID> is passed to the api and queried

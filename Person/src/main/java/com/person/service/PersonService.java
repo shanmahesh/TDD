@@ -1,5 +1,6 @@
 package com.person.service;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,9 @@ public class PersonService {
 	
 	public Person save(Person p) {
 		Person p1 = personRepo.save(p);
+		
+		if(p1.firstNm == null || p1.firstNm.trim().length() == 0)
+			throw new InvalidParameterException();
 		
 		return p1;
 	}

@@ -50,6 +50,19 @@ public class PersonRepoTest {
 	
 	
 	@Test
+	public void shouldSave() {
+		
+		Person p1 = new Person();
+		p1.firstNm = "Vin";
+		repo.save(p1);
+		
+		assertThat(p1.id).isGreaterThan(0);
+		
+	}
+	
+	
+	
+	@Test
 	@Order(1)
 	public void testSave() {
 		

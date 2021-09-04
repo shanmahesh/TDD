@@ -1,21 +1,25 @@
 package com.person;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.any;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
-
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
 
 import com.person.entity.Person;
+import com.person.exception.InvalidPersonException;
 import com.person.repo.PersonRepo;
 import com.person.service.PersonService;
 
@@ -53,6 +57,44 @@ public class PersonServiceTest {
 		
 		 serv = new PersonService(repo);
 	}
+	
+	
+	
+	@Test
+	public void shouldSave() {
+		
+		
+		
+		
+		Person p1 = new Person();
+		
+		p1.firstNm = "Vin";
+		
+		Mockito.when(serv.save(p1)).thenReturn(p1);
+		
+		serv.save(p1);
+		
+		assertThat(p1.id).isGreaterThan(0);
+		
+	}
+	
+	
+	@Test
+	public void shouldNotSave() {
+		
+		Person p1 = new Person();
+		
+		p1.firstNm = null;
+		
+		Assertions.assertThrows(InvalidPersonException.class, 
+		()->serv.save(p1)
+		);
+		
+		assertThat(p1.id).isEqualTo(0);
+		
+	}
+	
+	
 	
 	
 	
