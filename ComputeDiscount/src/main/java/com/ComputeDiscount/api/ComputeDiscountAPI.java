@@ -28,17 +28,24 @@ public class ComputeDiscountAPI {
 	}
 	
 	
-	@GetMapping("/getDisc")
+	@GetMapping("/getDisc/{x}")
 	public String getDisc(@PathVariable Integer x ) {
 		int disc = 0; 
-		if(x < 20)
+		
+		if(x <=0)
+			disc = 0;
+		else if(x <= 20)
 			disc = 20;
-		else if(x > 20 && x < 40)
+		else if(x > 20 && x <= 40)
 			disc = 40;
-		else if(x > 40 && x < 60)
+		else if(x > 40 && x <= 60)
 			disc = 60;
-		else 
+		else  if(x > 60 && x <= 100)
 			disc = 100;
+		else 
+			disc = 0;
+		
+		System.out.println(" Discount " + disc);
 		
 		return String.valueOf(disc) ;
 	}

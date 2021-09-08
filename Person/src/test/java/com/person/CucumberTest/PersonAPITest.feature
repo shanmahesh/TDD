@@ -23,16 +23,21 @@ Feature: Develop add person, list person, save person, query person
   @IntegrationTest
   Scenario: Register a person valid
   Given save person API is called with valid person
-  When person first name "Vin" is passed
+  When person first name "<fstNm>" is passed
   Then the status should be 200
   And the returned person ID should be > 0
+  
+  	Examples: 
+      | prsnID  | fstNm | 
+      | 1 			|  Vin 	| 
+      | 2 			|  Mah 	| 
   
   @IntegrationTest
   Scenario: Register a person invalid
   Given save person API is called with invalid person
-  When person first name "" is passed
+  When person first name "" is passed (invalid)
   Then the status should be 400
-  And the returned person ID should be 0
+  And the returned body should be "Invalid Person, validation failed"
   
   
   
@@ -47,6 +52,21 @@ Feature: Develop add person, list person, save person, query person
       | prsnID  | fstNm | 
       | 1 			|  Vin 	| 
       | 2 			|  Mah 	| 
+
+
+	@IntegrationTest
+	Scenario: Compute discount
+	Given For a given person "<fstNm>" present in the system
+	And <age> is passed to the api
+	When api "/findDisc" is called
+	Then the <disc> should be returned as "<fstNm> gets " <disc> 
+	
+		Examples: 
+       | fstNm  | age | disc | 
+       |  Vin 	| 22  | 40   |
+       |  Mah 	| 62  | 100  |  
+	
+
 
 
 

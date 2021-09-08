@@ -1,4 +1,4 @@
-package com.person.CucumberTest;
+package com.ComputeDiscount.BDDTest;
 
 import static io.restassured.RestAssured.given;
 

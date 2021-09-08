@@ -1,6 +1,7 @@
 package com.person;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class PersonRepoTest {
 		
 		Person p = new Person();
 		p.id = 11l;
-		p.firstNm="FName";		
+		p.firstNm="Vin";		
 		
 		listP.add(p);
 		
@@ -57,6 +58,27 @@ public class PersonRepoTest {
 		repo.save(p1);
 		
 		assertThat(p1.id).isGreaterThan(0);
+		
+	}
+	
+	
+	
+	@Test
+	public void shouldGetPersonByName() {
+		
+		List<Person> p = repo.findByFirstNm("Vin");
+		
+		assertEquals(p.stream().anyMatch(a->a.firstNm.equals("Vin")), true);
+		
+	}
+	
+	
+	@Test
+	public void shouldGetPersonByNameNotfound() {
+		
+		List<Person> p = repo.findByFirstNm("Vin");
+		
+		assertEquals(p.stream().anyMatch(a->a.firstNm.equals("Vin1")), false);
 		
 	}
 	

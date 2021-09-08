@@ -1,6 +1,6 @@
 package com.person.service;
 
-import java.security.InvalidParameterException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.person.entity.Person;
+import com.person.exception.InvalidPersonException;
+import com.person.external.compute;
 import com.person.repo.PersonRepo;
 
 
@@ -24,13 +26,25 @@ import com.person.repo.PersonRepo;
 public class PersonService {
 	
 	
+	compute computeServ;
+	
 	PersonRepo personRepo;
 	
 	public PersonService(PersonRepo personRepo) {
 		this.personRepo = personRepo;
 	}
 	
-	
+
+    @Autowired
+	public void setComputeServ(compute computeServ) {
+		this.computeServ = computeServ;
+	}
+
+
+
+
+
+
 	public String getLookUp(Person p) {
 		
 		return "";
@@ -74,10 +88,12 @@ public class PersonService {
 	
 	
 	public Person save(Person p) {
-		Person p1 = personRepo.save(p);
 		
-		if(p1.firstNm == null || p1.firstNm.trim().length() == 0)
-			throw new InvalidParameterException();
+		
+		if(p.firstNm == null || p.firstNm.trim().length() == 0)
+			throw new InvalidPersonException(null);
+		
+		Person p1 = personRepo.save(p);
 		
 		return p1;
 	}
@@ -118,5 +134,18 @@ public class PersonService {
 		 return personRepo.findById(id).get();
 	}
 	
+	
+	
+	public String computeDisc(String fstNm, String age) {
+		
+		List<Person> prsns = personRepo.findByFirstNm(fstNm);
+		
+		
+		String disc = computeServ.computeByAge(Integer.valueOf(age));
+		
+		
+		return prsns.get(0).getFirstNm() + " gets " + disc ;
+		
+	}
 	
 }

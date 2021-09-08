@@ -12,14 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.person.entity.Person;
 import com.person.exception.InvalidPersonException;
+import com.person.external.compute;
 import com.person.repo.PersonRepo;
 import com.person.service.PersonService;
 
@@ -30,14 +31,21 @@ import com.person.service.PersonService;
 public class PersonServiceTest {
 
 	//@Autowired
+	
+	@InjectMocks
 	PersonService serv ;
 	
 
+	@Autowired 
+	compute computeServ; 
 	
 	List<Person> listP = new ArrayList<Person>();
 	
 	@Mock
 	PersonRepo repo;
+	
+	@Mock 
+	compute compServ;
 	
 	@BeforeEach
 	public void setUp() {
@@ -69,12 +77,15 @@ public class PersonServiceTest {
 		Person p1 = new Person();
 		
 		p1.firstNm = "Vin";
+		p1.id = 1L;
 		
-		Mockito.when(serv.save(p1)).thenReturn(p1);
+		Mockito.when(repo.save(Mockito.any(Person.class))).thenReturn(p1);
+		
+		//Mockito.when(serv.save(p1)).thenReturn(p1);
 		
 		serv.save(p1);
 		
-		assertThat(p1.id).isGreaterThan(0);
+		assertThat(p1.id).isEqualTo(1);
 		
 	}
 	
@@ -90,11 +101,27 @@ public class PersonServiceTest {
 		()->serv.save(p1)
 		);
 		
-		assertThat(p1.id).isEqualTo(0);
+		//assertThat(p1.id).isEqualTo(0);
+		
+	}
+	
+	@Test
+	public void shouldComputeDisc() {
+		
+		
 		
 	}
 	
 	
+	@Test
+	public void shouldComputeDiscExternal() {
+		
+		String x = computeServ.computeByAge(22);
+		
+		System.out.println( " CCCCCC " + x);
+		
+		
+	}
 	
 	
 	
@@ -134,8 +161,7 @@ public class PersonServiceTest {
 		
 	}
 		
-		
-		
+	
 	
 	
 	

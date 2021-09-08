@@ -3,19 +3,25 @@ package com.person;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 
 import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
@@ -49,20 +55,24 @@ class PersonApplicationTests {
 	@MockBean
 	PersonService serv;
 	
-
+List<Person> persons = new ArrayList<Person>();
+	
+	
 	@BeforeEach
 	public  void addPerson() throws Exception {
 		
 		Person p = new Person();
 		p.firstNm = "Mah";
 		
-	MvcResult s =
+		persons.add(p);
+		
+	/*MvcResult s =
 	    mock.perform(post("/Persons/save")
                // .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(p)))
 	    		.andReturn()
 	    		;
-	
+	*/
 	//System.out.println(s.toString());
 		
 		//MvcResult res = mock.perform(
@@ -72,6 +82,54 @@ class PersonApplicationTests {
 
 		
 	}
+	
+	
+	@Test
+	@DisplayName("Test get perosns")
+	void shouldGetPersons() throws Exception {
+		
+		Mockito.when(serv.getPersons()).thenReturn(persons);
+		
+		
+		mock.perform(get("/Persons"))
+		.andExpect(status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$[0].firstNm", is("Mah") ));
+		;
+		
+	}
+	
+	
+	
+	@Test
+	@DisplayName("Test save perosn")
+	void shouldSavePrson() throws Exception {
+		
+		Mockito.when(serv.save(Mockito.any())).thenReturn(persons.get(0));
+		
+		
+		 mock.perform(post("/Persons/save")
+	                .contentType(MediaType.APPLICATION_JSON)
+	                .content(asJsonString(persons.get(0))))
+		 			.andExpect(status().isOk())
+		    		;
+		
+	}
+	
+
+	@Test
+	@DisplayName("Test get perosn")
+	void shouldGetPrson() throws Exception {
+		
+		Mockito.when(serv.getPerson(Mockito.any())).thenReturn(Optional.ofNullable(persons.get(0)));
+		
+		
+		 mock.perform(get("/Persons/{id}",1))
+				 	.andExpect(status().isOk())
+		    		;
+		
+	}
+	
 	
 	
 	
@@ -90,30 +148,19 @@ class PersonApplicationTests {
 
 	}
 	
-	
 	@Test
-	
-	void testGetPersons() throws Exception {
-	 
-		Person p = new Person();
-		p.firstNm = "Mah";
-		
-		 mock.perform(post("/Persons/save")
-	                .contentType(MediaType.APPLICATION_JSON)
-	                .content(asJsonString(p)))
-		 			.andExpect(status().isOk())
-		    		;
-		
-		mock.perform(get("/Persons"))
-		.andExpect(status().isOk())
-		.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
-		.andExpect(MockMvcResultMatchers.jsonPath("$[0].firstNm", is("Mah") ));
-		;
-		//.andExpect(jsonPath("$[0].firstNm", is("Mah") ));
-		
+	@DisplayName("GetDisc API test")
+	public void shouldGetDisc() throws Exception {
+		//Mockito.when(serv.save(Mockito.any())).thenReturn(persons.get(0));
+
+		//MvcResult res = 
+		mock.perform(get("/findDisc", 22 ))
+		.andExpect(status().isOk());
+		//.andExpect(status().isOk())
+		//.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+		//.andExpect(MockMvcResultMatchers.jsonPath("$[0].firstNm", is("Mah") ));
+
 	}
-	
-	
 	
 	 static String asJsonString(final Object obj) {
 	        try {

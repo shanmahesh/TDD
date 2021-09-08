@@ -31,7 +31,7 @@ public class vin extends BaseTestConfiguration{
 
     //@LocalServerPort
     //int port;
-    
+  /*  
 	@Given("Open the api1 {string}")
 	public void open_the_api1(String string) {
 	    // Write code here that turns the phrase above into concrete actions
@@ -87,6 +87,6 @@ public class vin extends BaseTestConfiguration{
 		System.out.println(response.then().extract().asString());
 	}
 
-	
+	*/
 	
 }

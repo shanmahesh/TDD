@@ -5,6 +5,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import java.util.Optional;
 
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -17,18 +18,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.person.api.PersonRestController;
 import com.person.entity.Person;
 import com.person.repo.PersonRepo;
 import com.person.service.PersonService;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.response.Response;
@@ -37,7 +43,7 @@ import io.restassured.specification.RequestSpecification;
 
 import static org.hamcrest.Matchers.*;
 
-
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonAPITest extends BaseTestConfiguration{
@@ -47,98 +53,147 @@ public class PersonAPITest extends BaseTestConfiguration{
 	private RequestSpecification request;
     private String ENDPOINT = "http://localhost:";
 
-	@MockBean  
-	PersonService personService;
-	
-	@InjectMocks
-	PersonRestController restController;
-	
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	
-	  @Autowired	
-	private MockMvc mockMvc;
-	
-	@Mock
-	PersonRepo repo;
+    
+    
+    @Given("save person API is called with valid person")
+    public void save_person_api_is_called_with_valid_person() {
+        // Write code here that turns the phrase above into concrete actions
+        //throw new io.cucumber.java.PendingException();
+    }
+    
+  /*  @When("person first name <fstNm> is passed")
+    public void person_first_name_fst_nm_is_passed(String string) {
+        // Write code here that turns the phrase above into concrete actions
+        //throw new io.cucumber.java.PendingException();
+        
+     // Write code here that turns the phrase above into concrete actions
+        //throw new io.cucumber.java.PendingException();
+    	
+    	Person p1 = new Person();
+		p1.setFirstNm(string);
+		
+		response = getRequest()
+				   .basePath("/Persons/save")
+				   .contentType(ContentType.JSON)
+				   .body(p1)
+				   .post();
+    }*/
+    
+    @When("person first name {string} is passed")
+    public void person_first_name_is_passed(String string) {
+        // Write code here that turns the phrase above into concrete actions
+       // throw new io.cucumber.java.PendingException();
+        
+    	Person p1 = new Person();
+		p1.setFirstNm(string);
+		
+		response = getRequest()
+				   .basePath("/Persons/save")
+				   .contentType(ContentType.JSON)
+				   .body(p1)
+				   .post();
+        
+    }
+    
+
+    
+    @Then("the returned person ID should be > {int}")
+    public void the_returned_person_id_should_be1(Integer int1) {
+        // Write code here that turns the phrase above into concrete actions
+       // throw new io.cucumber.java.PendingException();
+    	
+    	response.then().assertThat()
+		.body("id",Matchers.greaterThan(int1));
+    	
+    }
+
+    @Given("save person API is called with invalid person")
+    public void save_person_api_is_called_with_invalid_person() {
+        // Write code here that turns the phrase above into concrete actions
+        //throw new io.cucumber.java.PendingException();
+    	
+    }
+    
+    @When("person first name {string} is passed \\(invalid)")
+    public void person_first_name_is_passed_invalid(String string) {
+        // Write code here that turns the phrase above into concrete actions
+       // throw new io.cucumber.java.PendingException();
+    	
+     	Person p1 = new Person();
+    		p1.setFirstNm(string);
+    		
+    		response = getRequest()
+    				   .basePath("/Persons/save")
+    				   .contentType(ContentType.JSON)
+    				   .body(p1)
+    				   .post();
+    	
+    }
+
+  
+    
+    @Then("the returned person ID should be {int}")
+    public void the_returned_person_id_should_be(Integer int1) {
+        // Write code here that turns the phrase above into concrete actions
+       // throw new io.cucumber.java.PendingException();
+    	
+    	response.then().statusCode(int1);
+    }
+    
+    @Then("the returned body should be {string}")
+    public void the_returned_person_id_should_be(String str) {
+        // Write code here that turns the phrase above into concrete actions
+       // throw new io.cucumber.java.PendingException();
+    	
+    	
+    	System.out.println("RRRR-- " + response.asString());
+    	
+    	//response.then().assertThat()
+		//.body("firstNm",Matchers.greaterThan(int1));
+    	
+    	response.then().assertThat()
+		.body(equalToIgnoringCase(str));
+    	
+    }
+    
+
+    
+    
 	
 	@Given("If person {int} {string} is present in the system")
 	public void if_person_is_present_in_the_system(Integer int1, String string) {
 	    // Write code here that turns the phrase above into concrete actions
 	   // throw new io.cucumber.java.PendingException();
-		
-		
-		
-		
-		RestAssuredMockMvc.standaloneSetup(personService);
-		
-		Person p1 = new Person();
+
+		/*Person p1 = new Person();
 		p1.setFirstNm(string);
 		
-		//BDDMockito.given(personService.getPerson(Long.valueOf(int1)))
-		//		  .willReturn(Optional.ofNullable(p1));
+		response = getRequest()
+				   .basePath("/Persons/save")
+				   .contentType(ContentType.JSON)
+				   .body(p1)
+				   .post();
 		
+		response.then().statusCode(200);
+	*/
+		response = getRequest()
+				   .basePath("/Persons")
+				   .get();
 	
-		 
-		
-		
+		System.out.println(" GIVEN " + response.asString());
 		
 	}
 	@When("person {int} is passed to the api and queried")
 	public void person_is_passed_to_the_api_and_queried(Integer int1) {
 	    // Write code here that turns the phrase above into concrete actions
 	    //throw new io.cucumber.java.PendingException();
-		
-		//RestAssuredMockMvc.webAppContextSetup(webApplicationContext);
-		
-		//personService = new PersonService(repo);
 
-		
-		mockMvc = MockMvcBuilders.standaloneSetup(restController).build();
-		
-		RestAssuredMockMvc.mockMvc(mockMvc);
-		
-		//RestAssuredMockMvc.standaloneSetup(restController,personService);
-		//RestAssuredMockMvc.standaloneSetup(personService);
-		
-		Person p1 = new Person();
-		p1.setFirstNm("Mah");
-		
-		//Mockito.when(repo.findById(Long.valueOf(int1)))
-		//.thenReturn(Optional.ofNullable(p1));
-		
-		
-		//Mockito.when(personService.getPerson(Long.valueOf(int1)))
-		//.thenReturn(Optional.ofNullable(p1));
-		
-		BDDMockito.when(personService.getPerson(Long.valueOf(int1)))
-		.thenReturn(Optional.ofNullable(p1));
-		
-		//BDDMockito.given(personService.getPerson(Long.valueOf(int1)))
-		//.willReturn(Optional.ofNullable(p1));
-		
-		
-		//BDDMockito.when(personService.getPerson(Long.valueOf(int1)))
-		//.thenReturn(Optional.ofNullable(p1));
-		
-		
-		//BDDMockito.given(personService.getPerson(Long.valueOf(int1)))
-		 // .willReturn(Optional.ofNullable(p1));
-		MockMvcResponse r = RestAssuredMockMvc
-				.given().when()
-				.get("/Persons/{id}",int1 )
-				;
-		
-		System.out.println(" STAUS XXXXXXXXXX" +  r.statusCode() + r.asPrettyString() );
-		
-		
-		
 		response = getRequest()
 				   .basePath("/Persons/{id}")
 				   .pathParam("id",int1)
 				   .get();
 		
-		
+		System.out.println(response.asPrettyString());
 		
 	}
 	@Then("the status should be {int}")
@@ -152,16 +207,77 @@ public class PersonAPITest extends BaseTestConfiguration{
 	    // Write code here that turns the phrase above into concrete actions
 	   // throw new io.cucumber.java.PendingException();
 		
+		System.out.println(response.asString());
+		
 		response.then().assertThat()
-			.body("Person.firstNm",Matchers.equalTo(string));
+			.body("firstNm",Matchers.equalTo(string));
+	}
+	
+	
+	@Before
+	public void init() {
+		request = getRequest();
+	}
+	
+	@Given("For a given person {string} present in the system")
+	public void for_a_given_person_present_in_the_system(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		
+		 request.queryParam("name", string);
+	}
+
+	
+	  @Autowired
+	  private WireMockServer wireMockServer;
+	
+	@Given("{int} is passed to the api")
+	public void is_passed_to_the_api(Integer int1) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+	    request.queryParam("age", int1);
+	}
+
+	@When("api {string} is called")
+	public void api_is_called(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		
+		this.wireMockServer.stubFor(
+			      WireMock.get(WireMock.urlPathMatching("/getDisc/([0-9]*)"))
+			      //.get("/getDisc/(*)")
+			      
+			        .willReturn(aResponse()
+			          //.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+			          //.withBody("[{\"userId\": 1,\"id\": 1,\"title\": \"Learn Spring Boot 3.0\", \"completed\": false}," +
+			          //  "{\"userId\": 1,\"id\": 2,\"title\": \"Learn WireMock\", \"completed\": true}]"))
+			        .withBody("123456"))		
+			    );
+		
+		
+		
+		response = request
+				//.queryParam("name", string)
+				//.queryParam("age", "0")
+				.when()
+				.get(string)
+				.andReturn();
+		
+	}
+
+	@Then("the {int} should be returned as {string} {int}")
+	public void the_should_be_returned_as(Integer int1, String string, Integer int2) {
+	    // Write code here that turns the phrase above into concrete actions
+	 //   throw new io.cucumber.java.PendingException();
+		response
+		.then()
+		.assertThat()
+		.body(equalToIgnoringCase(string + int2 ));
+		
 	}
 	
 	
 	
-	
-	
-	
-	
-	
+
 	
 }

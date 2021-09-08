@@ -14,7 +14,7 @@ public class SavePrsonTest extends BaseTestConfiguration{
 	private Response response;
 	
 	Person p;
-	
+	/*
 	@Given("Input the {string} and {string} as name")
 	public void input_the_and_as_name(String string, String string2) {
 	    // Write code here that turns the phrase above into concrete actions
@@ -51,5 +51,5 @@ public class SavePrsonTest extends BaseTestConfiguration{
 		System.out.println(response.asString());
 		
 	}
-	
+	*/
 }

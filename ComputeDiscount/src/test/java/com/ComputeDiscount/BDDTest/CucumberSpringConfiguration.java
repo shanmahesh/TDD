@@ -1,4 +1,4 @@
-package com.person.CucumberTest;
+package com.ComputeDiscount.BDDTest;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,10 +7,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
 
-import com.person.PersonApplication;
-import com.person.service.PersonService;
+import com.ComputeDiscount.ComputeDiscountApplication;
+
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import io.restassured.RestAssured;
@@ -25,9 +24,8 @@ import javax.annotation.PostConstruct;
 
 @CucumberContextConfiguration
  @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
-			classes = com.person.PersonApplication.class)
+			classes = ComputeDiscountApplication.class )
 @AutoConfigureMockMvc
-@ContextConfiguration(initializers = {WireMockInitializer.class})
 public class CucumberSpringConfiguration {
 
 
