@@ -147,5 +147,21 @@ public class PersonService {
 		return prsns.get(0).getFirstNm() + " gets " + disc ;
 		
 	}
+
+
+	public Person statusChange(String name) {
+		
+		List<Person> prsns = personRepo.findByFirstNm(name);
+		
+		if(prsns.size() ==0) {
+			return null;
+		}else {
+			prsns.get(0).setStatus("Added");
+		}
+		
+		 personRepo.save(prsns.get(0));
+		
+		return prsns.get(0);
+	}
 	
 }

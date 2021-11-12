@@ -30,6 +30,19 @@ public class Person implements Serializable {
 	@Column(name="birthDt")
 	@JsonFormat(pattern = "MM/dd/yyyy")
 	public Date birthDt;
+	
+	@Column(name = "status")
+	private String status;
+	
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -58,6 +71,7 @@ public class Person implements Serializable {
 	public String toString() {
 		return "Person [id=" + id + ", firstNm=" + firstNm + ", lastName=" + lastName + ", birthDt=" + birthDt + "]";
 	}
+	
 	
 	
 	

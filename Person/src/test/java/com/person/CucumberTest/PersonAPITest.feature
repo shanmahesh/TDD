@@ -39,6 +39,13 @@ Feature: Develop add person, list person, save person, query person
   Then the status should be 400
   And the returned body should be "Invalid Person, validation failed"
   
+  @IntegrationTest
+  Scenario: Person status changes
+  Given The person available in the system
+  When status is "" 
+  And  API /statusChange is called with "Added" status 
+  Then the return code should be 200 
+  And person's status should be "Added"
   
   
   @IntegrationTest
@@ -58,7 +65,7 @@ Feature: Develop add person, list person, save person, query person
 	Scenario: Compute discount
 	Given For a given person "<fstNm>" present in the system
 	And <age> is passed to the api
-	When api "/findDisc" is called
+	When api "/findDisc" is called with <age> then <disc>
 	Then the <disc> should be returned as "<fstNm> gets " <disc> 
 	
 		Examples: 

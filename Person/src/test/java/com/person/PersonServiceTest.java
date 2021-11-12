@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.person.entity.Person;
 import com.person.exception.InvalidPersonException;
@@ -26,7 +27,7 @@ import com.person.service.PersonService;
 
 //@RunWith(MockitoJUnitRunner.class)
 
-
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 

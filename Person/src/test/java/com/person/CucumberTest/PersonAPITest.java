@@ -41,6 +41,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -238,8 +239,8 @@ public class PersonAPITest extends BaseTestConfiguration{
 	    request.queryParam("age", int1);
 	}
 
-	@When("api {string} is called")
-	public void api_is_called(String string) {
+	@When("api {string} is called with {int} then {int}")
+	public void api_is_called_with_then(String string, Integer int1, Integer int2) {
 	    // Write code here that turns the phrase above into concrete actions
 	    //throw new io.cucumber.java.PendingException();
 		
@@ -251,7 +252,7 @@ public class PersonAPITest extends BaseTestConfiguration{
 			          //.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 			          //.withBody("[{\"userId\": 1,\"id\": 1,\"title\": \"Learn Spring Boot 3.0\", \"completed\": false}," +
 			          //  "{\"userId\": 1,\"id\": 2,\"title\": \"Learn WireMock\", \"completed\": true}]"))
-			        .withBody("123456"))		
+			        .withBody(String.valueOf(int2)))		
 			    );
 		
 		
@@ -274,6 +275,67 @@ public class PersonAPITest extends BaseTestConfiguration{
 		.assertThat()
 		.body(equalToIgnoringCase(string + int2 ));
 		
+	}
+	
+	
+	
+	
+	
+	String name = "";
+
+	Person p1 = new Person();
+	
+	@Given("The person firstNm {string} available in the system")
+	public void the_person_first_nm_available_in_the_system(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		name = string;
+		
+		
+		p1.setFirstNm(string);
+		
+		response = getRequest()
+				   .basePath("/Persons/save")
+				   .contentType(ContentType.JSON)
+				   .body(p1)
+				   .post();
+		
+		p1 = response.as(Person.class);
+		
+	}
+	@When("status is {string}")
+	public void status_is(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		assertThat(p1.getStatus().equalsIgnoreCase(""));
+		
+	}
+	@When("API \\/statusChange is called with {string} status")
+	public void api_status_change_is_called_with_status(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		
+		response = getRequest()
+				   .basePath("/Persons/statusChange")
+				   .contentType(ContentType.JSON)
+				   .param("name", name)
+				   .post();
+		
+		
+	}
+	@Then("the return code should be {int}")
+	public void the_return_code_should_be(Integer int1) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		
+		response.then().statusCode(int1);
+	    
+	}
+	@Then("persons status should be {string}")
+	public void persons_status_should_be(String string) {
+	    // Write code here that turns the phrase above into concrete actions
+	    //throw new io.cucumber.java.PendingException();
+		response.then().body("status", equalToIgnoringCase(string));
 	}
 	
 	
